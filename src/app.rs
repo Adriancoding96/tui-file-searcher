@@ -48,22 +48,40 @@ impl App {
     * Function called when user saves json key values, after saving
     * it restores the application state;
     *
-    * @param slef: contains a mutable reference to itslef
+    * @param self: contains a mutable reference to itslef
     */
     pub fn save_key_value(&mut self) {
         self.pairs.insert(self.key_input.clone(), self.value_input.clone());
         self.key_input = String::new();
         self.value_input = String::new();
         self.currently_editing = None;
-    } 
+    }
 
+    /*
+    * Helper function to to check if values are currently being edited
+    *
+    * @param self: contains a mutable reference to itslef
+    */
+    pub fn toggle_editing(&mut self) {
+        if let Some(edit_mode) = &self.currently_editing {
+            match edit_mode {
+                CurrentlyEditing::Key => self.currently_editing = Some(CurrentlyEditing::Value),
+                CurrentlyEditing::Value => self.currently_editing = Some(CurrentlyEditing::Key),
+            };
+        } else {
+            self.currently_editing = Some(CurrentlyEditing::Key);
+        }
+    }
+
+    /*
+    * Function to convert hashmap values to json, and
+    * print it to the screen.
+    * 
+    * @return serde_json::Result: returns a empty result if successfull, if not returns an Error
+    */
+    pub fn print_json(&self) -> serde_json::Result<()> {
+        let output = serde_json::to_string(&self.pairs)?;
+        println!("{}", output);
+        Ok(())
+    }
 }
-
-
-
-
-
-
-
-
-
